@@ -1,5 +1,5 @@
 {
-  "name": "NoteBook",
+  "name": "notebook",
   "private": true,
   "scripts": {
     "build": "turbo run build",
