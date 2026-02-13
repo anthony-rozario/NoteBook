@@ -31,7 +31,7 @@ export default function Home() {
           height={38}
           priority
         />
-        <ol>
+        <ol className="text-sm/6 text-zinc-600 dark:text-zinc-300">
           <li>
             Get started by editing <code>apps/web/app/page.tsx</code>
           </li>
