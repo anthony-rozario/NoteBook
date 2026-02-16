@@ -37,3 +37,12 @@ CREATE TABLE page_permissions (
     shared_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(page_id, user_id) -- Prevents duplicate entries
 );
+
+CREATE TABLE users (
+  user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  role VARCHAR(50) DEFAULT 'student', -- Matches your 'Role-Based Logic'
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
