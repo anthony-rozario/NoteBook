@@ -8,7 +8,7 @@ export default function Home() {
         <div className="flex-1">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to NoteBook</h1>
           <p className="text-gray-500 mb-6">Your collaborative note-taking ecosystem for students and professionals.</p>
-          
+          <p>{process.env.DATABASE_URL}</p>
         </div>
         <div className="flex-1">
           
