@@ -24,11 +24,14 @@
     "packages/*"
   ],
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
     "@upstash/redis": "^1.36.2",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.34.0",
+    "headlessui": "^0.0.0",
+    "react-icons": "^5.5.0",
     "supabase": "^2.76.9"
   }
 }

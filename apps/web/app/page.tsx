@@ -1,19 +1,80 @@
+import Feature from "./components/Features"
+import Footer from "./components/Footer"
 
 
 export default function Home() {
-  return (
-    
-    <div className="min-h-screen flex items-center justify-center bg-[#FDFCF0]">
-      <div className="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-8">
-        <div className="flex-1">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to NoteBook</h1>
-          <p className="text-gray-500 mb-6">Your collaborative note-taking ecosystem for students and professionals.</p>
-          <p>{process.env.DATABASE_URL}</p>
+
+  // Replace javascript:void(0) path with your path
+  const navigation = [
+      { title: "Customers", path: "javascript:void(0)" },
+      { title: "Careers", path: "javascript:void(0)" },
+  ]
+  
+    return (
+      <>
+      {/* Hero Section */}
+        <div className="">
+            
+            <section className=" pb-12 px-4 items-center lg:flex md:px-8">
+                <div className="space-y-4 flex-1 sm:text-center lg:text-left">
+                    <h1 className="text-white font-bold text-4xl xl:text-5xl">
+                        One page Template for
+                         <span className="text-indigo-400"> Digital agency</span>
+                    </h1>
+                    <p className="text-gray-300 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
+                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum
+                    </p>
+                    <div className="pt-10 items-center justify-center space-y-3 sm:space-x-6 sm:space-y-0 sm:flex lg:justify-start">
+                        <a href="javascript:void(0)" className="px-7 py-3 w-full bg-white text-gray-800 text-center rounded-md shadow-md block sm:w-auto">
+                            Get started
+                        </a>
+                        <a href="javascript:void(0)" className="px-7 py-3 w-full bg-gray-700 text-gray-200 text-center rounded-md block sm:w-auto">
+                            Try it out
+                        </a>
+                    </div>
+                </div>
+                <div className="flex-1 text-center mt-7 lg:mt-0 lg:ml-3">
+                    <img src="https://i.postimg.cc/HxHyt53c/undraw-heatmap-uyye.png" className="w-full mx-auto sm:w-10/12  lg:w-full" />
+                </div>
+            </section>
         </div>
-        <div className="flex-1">
-          
-        </div>
-      </div>
-      </div>
-  );
+      {/* Features Section */}
+      <section className="mt-24 pb-4 px-4 items-center lg:flex md:px-8">
+                <div className="space-y-4 flex-1 sm:text-center lg:text-left">
+                    <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">
+                        Optimize your website for
+                         <span className="text-indigo-600"> Search engine</span>
+                    </h1>
+                    <p className="text-gray-500 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
+                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum
+                    </p>
+                    <div>
+                        <p className="text-gray-800 py-3">
+                            Subscribe to our newsletter and we'll save your time
+                        </p>
+                        <form className="items-center space-y-3 sm:justify-center sm:space-x-3 sm:space-y-0 sm:flex lg:justify-start">
+                            <input
+                                type="text"
+                                placeholder="Enter your email"
+                                className="text-gray-500 border outline-none p-3 rounded-md w-full sm:w-72"
+                            />
+                            <button className="outline-none bg-gray-700 text-white text-center px-4 py-3 rounded-md shadow w-full ring-offset-2 ring-gray-700 focus:ring-2  sm:w-auto">
+                                Subscribe 
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div className="flex-1 text-center mt-4 lg:mt-0 lg:ml-3">
+                    <img src="https://i.postimg.cc/kgd4WhyS/container.png" className="w-full mx-auto sm:w-10/12  lg:w-full" />
+                </div>
+            </section>
+            <Feature />
+
+
+
+      {/* Footer */}
+      <Footer />
+        </>
+    )
 }
+

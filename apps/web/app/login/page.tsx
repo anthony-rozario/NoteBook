@@ -2,10 +2,12 @@
 import { motion } from "framer-motion";
 import { login } from "@/app/auth/actions";
 import Link from "next/link";
+import Login from "../components/login";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDFCF0] p-4">
+    <>
+    {/*<div className="min-h-screen flex items-center justify-center bg-[#FDFCF0] p-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -47,6 +49,8 @@ export default function LoginPage() {
           </Link>
         </div>
       </motion.div>
-    </div>
+    </div>*/}
+    <Login />
+    </>
   );
 }

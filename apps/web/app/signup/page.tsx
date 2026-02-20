@@ -104,14 +104,14 @@ export default function SignupPage() {
               <button 
                 type="button" 
                 onClick={handleNext} 
-                className="flex-[2] px-4 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-100 hover:bg-amber-600 transition-all"
+                className="flex-2 px-4 py-3 bg-amber-500 text-white font-bold rounded-xl shadow-lg shadow-amber-100 hover:bg-amber-600 transition-all"
               >
                 Continue
               </button>
             ) : (
               <button 
                 type="submit" 
-                className="flex-[2] px-4 py-3 bg-black text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition-all"
+                className="flex-2 px-4 py-3 bg-black text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition-all"
               >
                 Complete Setup
               </button>
