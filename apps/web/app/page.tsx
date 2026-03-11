@@ -1,80 +1,39 @@
-import Feature from "./components/Features"
-import Footer from "./components/Footer"
+"use client";
 
+import { useState } from "react";
+import Feature from "../components/Features"
+import Footer from "../components/Footer"
+import HeroSection from "../components/Hero"
+import AuthModal from "@/app/auth/AuthModal" // Make sure this path matches your folder structure!
 
 export default function Home() {
+  // 1. State to control the modal visibility and which side to show
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authView, setAuthView] = useState<'login' | 'signup'>('signup');
 
-  // Replace javascript:void(0) path with your path
-  const navigation = [
-      { title: "Customers", path: "javascript:void(0)" },
-      { title: "Careers", path: "javascript:void(0)" },
-  ]
-  
-    return (
-      <>
-      {/* Hero Section */}
-        <div className="">
-            
-            <section className=" pb-12 px-4 items-center lg:flex md:px-8">
-                <div className="space-y-4 flex-1 sm:text-center lg:text-left">
-                    <h1 className="text-white font-bold text-4xl xl:text-5xl">
-                        One page Template for
-                         <span className="text-indigo-400"> Digital agency</span>
-                    </h1>
-                    <p className="text-gray-300 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum
-                    </p>
-                    <div className="pt-10 items-center justify-center space-y-3 sm:space-x-6 sm:space-y-0 sm:flex lg:justify-start">
-                        <a href="javascript:void(0)" className="px-7 py-3 w-full bg-white text-gray-800 text-center rounded-md shadow-md block sm:w-auto">
-                            Get started
-                        </a>
-                        <a href="javascript:void(0)" className="px-7 py-3 w-full bg-gray-700 text-gray-200 text-center rounded-md block sm:w-auto">
-                            Try it out
-                        </a>
-                    </div>
-                </div>
-                <div className="flex-1 text-center mt-7 lg:mt-0 lg:ml-3">
-                    <img src="https://i.postimg.cc/HxHyt53c/undraw-heatmap-uyye.png" className="w-full mx-auto sm:w-10/12  lg:w-full" />
-                </div>
-            </section>
-        </div>
-      {/* Features Section */}
-      <section className="mt-24 pb-4 px-4 items-center lg:flex md:px-8">
-                <div className="space-y-4 flex-1 sm:text-center lg:text-left">
-                    <h1 className="text-gray-800 font-bold text-4xl xl:text-5xl">
-                        Optimize your website for
-                         <span className="text-indigo-600"> Search engine</span>
-                    </h1>
-                    <p className="text-gray-500 max-w-xl leading-relaxed sm:mx-auto lg:ml-0">
-                        It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum
-                    </p>
-                    <div>
-                        <p className="text-gray-800 py-3">
-                            Subscribe to our newsletter and we'll save your time
-                        </p>
-                        <form className="items-center space-y-3 sm:justify-center sm:space-x-3 sm:space-y-0 sm:flex lg:justify-start">
-                            <input
-                                type="text"
-                                placeholder="Enter your email"
-                                className="text-gray-500 border outline-none p-3 rounded-md w-full sm:w-72"
-                            />
-                            <button className="outline-none bg-gray-700 text-white text-center px-4 py-3 rounded-md shadow w-full ring-offset-2 ring-gray-700 focus:ring-2  sm:w-auto">
-                                Subscribe 
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div className="flex-1 text-center mt-4 lg:mt-0 lg:ml-3">
-                    <img src="https://i.postimg.cc/kgd4WhyS/container.png" className="w-full mx-auto sm:w-10/12  lg:w-full" />
-                </div>
-            </section>
-            <Feature />
+  // 2. Helper function to open the modal to a specific view
+  const openAuth = (view: 'login' | 'signup') => {
+    setAuthView(view);
+    setIsAuthOpen(true);
+  };
 
-
-
+  return (
+    <>
+      {/* 3. Pass the openAuth function down to your HeroSection as a prop */}
+      <HeroSection onOpenAuth={openAuth} />
+      
+      {/* Feature Section */}
+      <Feature />
+      
       {/* Footer */}
       <Footer />
-        </>
-    )
-}
 
+      {/* 4. The Auth Modal Component */}
+      <AuthModal 
+        isOpen={isAuthOpen} 
+        initialView={authView}
+        onClose={() => setIsAuthOpen(false)} 
+      />
+    </>
+  )
+}

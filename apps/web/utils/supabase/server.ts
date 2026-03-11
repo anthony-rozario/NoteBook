@@ -1,9 +1,10 @@
 // apps/web/utils/supabase/server.ts
 
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export async function createClient() {
+  // Await the cookies object (required in Next.js 15+)
   const cookieStore = await cookies()
 
   return createServerClient(
@@ -11,22 +12,20 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
+        // NEW: Fetch all cookies at once
+        getAll() {
+          return cookieStore.getAll()
         },
-        // Refactored to match exactly what @supabase/ssr expects
-        set(name: string, value: string, options: CookieOptions) {
+        // NEW: Set multiple cookies at once
+        setAll(cookiesToSet) {
           try {
-            cookieStore.set({ name, value, ...options })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
           } catch (error) {
-            // Safe to ignore in Server Components
-          }
-        },
-        remove(name: string, options: CookieOptions) {
-          try {
-            cookieStore.set({ name, value: '', ...options })
-          } catch (error) {
-            // Safe to ignore in Server Components
+            // The `setAll` method was called from a Server Component.
+            // This is completely safe to ignore because your middleware 
+            // handles refreshing the user's session!
           }
         },
       },

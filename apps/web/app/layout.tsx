@@ -1,24 +1,19 @@
+// apps/web/app/layout.tsx
+import Navbar from "../components/Navbar/Navbar";
+import "./globals.css"; // Double check this path!
+import { Inter } from "next/font/google";
 
-import Navbar from "./components/Navbar";
-import "./globals.css";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "NoteBook",
-  description: "AI-Powered Collaborative Learning",
-  icons: {
-    icon: "/n-logo.png",
-  },
-};
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={inter.className}
+       cz-shortcut-listen="true"
+      >
         <Navbar />
         {children}
-      </body>
+        </body>
     </html>
   );
 }
