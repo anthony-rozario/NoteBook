@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
+    "@types/pdf-parse": "^1.1.5",
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
     "turbo": "^2.8.3",
@@ -27,11 +28,23 @@
     "@headlessui/react": "^2.2.9",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
+    "@tiptap/extension-image": "^3.20.1",
+    "@tiptap/extension-table": "^3.20.1",
+    "@tiptap/extension-table-cell": "^3.20.1",
+    "@tiptap/extension-table-header": "^3.20.1",
+    "@tiptap/extension-table-row": "^3.20.1",
+    "@tiptap/extension-text-align": "^3.20.1",
+    "@tiptap/extension-underline": "^3.20.1",
+    "@tiptap/pm": "^3.20.1",
+    "@tiptap/react": "^3.20.1",
+    "@tiptap/starter-kit": "^3.20.1",
     "@upstash/redis": "^1.36.4",
     "bcryptjs": "^3.0.3",
-    "framer-motion": "^12.34.0",
+    "framer-motion": "^12.35.2",
     "headlessui": "^0.0.0",
+    "pdf-parse": "^2.4.5",
     "react-icons": "^5.5.0",
-    "supabase": "^2.76.9"
+    "supabase": "^2.76.9",
+    "uuid": "^13.0.0"
   }
 }
