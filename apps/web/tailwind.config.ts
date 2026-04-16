@@ -4,6 +4,7 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}", // Scans your signup page and layout
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
     "../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}", // Critical for monorepo shared UI
   ],
   theme: {

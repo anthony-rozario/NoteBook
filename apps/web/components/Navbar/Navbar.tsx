@@ -62,8 +62,8 @@ export default function Navbar() {
       {/* Navigation Links - Center (Hidden on small screens) */}
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
         <Link href="#features" className="hover:text-gray-900 transition-colors">Features</Link>
-        <Link href="#pricing" className="hover:text-gray-900 transition-colors">Pricing</Link>
-        <Link href="#contact" className="hover:text-gray-900 transition-colors">Contact</Link>
+        <Link href="/pricing" className="hover:text-gray-900 transition-colors">Pricing</Link>
+        <Link href="/contact" className="hover:text-gray-900 transition-colors">Contact</Link>
       </div>
 
       {/* Auth Actions - Right */}

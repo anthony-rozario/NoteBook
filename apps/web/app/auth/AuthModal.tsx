@@ -260,11 +260,11 @@ export default function AuthModal({ isOpen, initialView = 'signup', onClose }: A
 
         {/* --- OVERLAY CONTAINER --- */}
         <div className={`absolute top-0 left-1/2 w-1/2 h-full overflow-hidden z-100 ${transitionClass} ${isRightPanelActive ? '-translate-x-full' : 'translate-x-0'}`}>
-          <div className={`bg-black text-gray-200 relative -left-full h-full w-[200%] ${transitionClass} ${isRightPanelActive ? 'translate-x-1/2' : 'translate-x-0'}`}>
+          <div className={`bg-blue-500 text-gray-200 relative -left-full h-full w-[200%] ${transitionClass} ${isRightPanelActive ? 'translate-x-1/2' : 'translate-x-0'}`}>
             
             <div className={`absolute flex flex-col items-center justify-center px-10 text-center top-0 h-full w-1/2 ${transitionClass} ${isRightPanelActive ? 'translate-x-0' : '-translate-x-[20%]'}`}>
               <h1 className="font-bold text-3xl m-0 text-white">Welcome Back!</h1>
-              <p className="text-sm font-light leading-relaxed my-5 max-w-xs text-gray-400">Ready to dive back into your notebooks? Log in to continue.</p>
+              <p className="text-sm font-light leading-relaxed my-5 max-w-xs text-gray-300">Ready to dive back into your notebooks? Log in to continue.</p>
               <button 
                 type="button" 
                 onClick={() => { 
@@ -280,7 +280,7 @@ export default function AuthModal({ isOpen, initialView = 'signup', onClose }: A
             
             <div className={`absolute flex flex-col items-center justify-center px-10 text-center top-0 h-full w-1/2 right-0 ${transitionClass} ${isRightPanelActive ? 'translate-x-[20%]' : 'translate-x-0'}`}>
               <h1 className="font-bold text-3xl m-0 text-white">Hello, Friend!</h1>
-              <p className="text-sm font-light leading-relaxed my-5 max-w-xs text-gray-400">Start your journey with us today. Organize your thoughts and enhance your learning.</p>
+              <p className="text-sm font-light leading-relaxed my-5 max-w-xs text-gray-300">Start your journey with us today. Organize your thoughts and enhance your learning.</p>
               <button 
                 type="button" 
                 onClick={() => { 

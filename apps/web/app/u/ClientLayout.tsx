@@ -10,6 +10,7 @@ import { RiGeminiFill } from 'react-icons/ri';
 import { useUser } from '@/context/UserContext';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
+import CreateNotebookButton from '@/components/CreateNotebookButton';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -85,12 +86,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       ">
         
         {/* Create Button (Desktop Only - Mobile uses a FAB below) */}
-        <button 
-          onClick={() => setIsCreateOpen(true)}
-          className="hidden md:flex w-11 h-11 bg-[#1c1c21] text-white rounded-full items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/10 shrink-0"
-        >
-          <FiPlus size={22} />
-        </button>
+        <CreateNotebookButton className="hidden md:flex" />
 
         {/* Navigation Icons */}
         <div className="flex flex-row md:flex-col w-full md:w-auto justify-around md:justify-start gap-0 md:gap-6 text-gray-500 md:mt-4">

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Feature from "../components/Features"
+import FeaturesSection from "../components/Features"
 import Footer from "../components/Footer"
 import HeroSection from "../components/Hero"
-import AuthModal from "@/app/auth/AuthModal" // Make sure this path matches your folder structure!
+import AuthModal from "@/app/auth/AuthModal"
+import HowItWorksSection from "@/components/HowItWorksSection"
+import CtaSection from "@/components/CtaSection"
 
 export default function Home() {
   // 1. State to control the modal visibility and which side to show
@@ -16,15 +18,22 @@ export default function Home() {
     setAuthView(view);
     setIsAuthOpen(true);
   };
+  const openModal = (view: 'login' | 'signup') => {
+    setAuthView(view);
+    setIsAuthOpen(true);
+  };
 
   return (
     <>
       {/* 3. Pass the openAuth function down to your HeroSection as a prop */}
-      <HeroSection onOpenAuth={openAuth} />
-      
-      {/* Feature Section */}
-      <Feature />
-      
+     
+        <main id="main-content">
+        <HeroSection onOpenModal={openModal} />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <CtaSection onOpenModal={openModal} />
+      </main>
+
       {/* Footer */}
       <Footer />
 
