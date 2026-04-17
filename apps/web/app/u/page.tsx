@@ -168,7 +168,7 @@ export default function DashboardPage() {
           {data?.recentNotebooks && data.recentNotebooks.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {data.recentNotebooks.map((nb, idx) => {
-                const colors = cardColors[idx % cardColors.length];
+                const colors = cardColors[idx % cardColors.length] ?? { bg: 'bg-blue-50', text: 'text-blue-500' };
                 return (
                   <div
                     key={nb.id}

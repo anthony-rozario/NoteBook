@@ -66,15 +66,15 @@ export async function completeOnboarding(formData: FormData) {
 
   if (authError) return { error: authError.message }
 
-  // 3. FIXED: Save using your EXACT column names!
+  // 3. Save using the CORRECT column names from the actual Supabase schema
   const { error: dbError } = await supabase
     .from('users')
     .update({
-      role: userType, 
-      institution_name: institution || null,    // Matches your DB!
-      course_or_class: course || null,          // Matches your DB!
-      work_profession: profession || null,      // Matches your DB!
-      company_name: company || null             // Matches your DB!
+      role: userType,
+      institution_name: institution || null,
+      course_or_class: course || null,
+      work_profession: profession || null,
+      company_name: company || null,
     })
     .eq('user_id', user.id)
 

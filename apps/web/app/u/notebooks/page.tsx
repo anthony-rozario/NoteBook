@@ -238,19 +238,8 @@ export default function NotebooksPage() {
     setOpenDropdownId(null);
     setAnalysisError(null);
 
-    // If already analyzed, fetch existing summary from DB first
-    if (notebook.has_ai_summary) {
-      const { data: existing } = await supabase
-        .from('ai_summaries')
-        .select('summary_content, key_takeaways')
-        .eq('notebook_id', notebook.id)
-        .single();
-
-      if (existing?.key_takeaways) {
-        setAnalysisModal({ title: notebook.title, data: existing.key_takeaways as Analysis });
-        return;
-      }
-    }
+    // The API route now securely handles checking for existing summaries using an admin token, 
+    // bypassing any RLS issues and ensuring correct data payloads.
 
     setAnalyzingId(notebook.id);
     try {
@@ -364,7 +353,7 @@ export default function NotebooksPage() {
       ) : filteredNotebooks.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredNotebooks.map((notebook, index) => {
-            const colors = cardColors[index % cardColors.length];
+            const colors = cardColors[index % cardColors.length] ?? { bg: 'bg-blue-50', text: 'text-blue-500' };
             const isDropdownOpen = openDropdownId === notebook.id;
             const isThisAnalyzing = analyzingId === notebook.id;
 
@@ -446,9 +435,12 @@ export default function NotebooksPage() {
                         </span>
                       )}
                       {!isThisAnalyzing && notebook.has_ai_summary && (
-                        <span className="px-2.5 py-1 bg-blue-50 text-blue-600 text-[10px] uppercase font-bold tracking-wider rounded-md border border-blue-100 flex items-center gap-1 shadow-sm">
+                        <button 
+                          onClick={(e) => handleAnalysisClick(e, notebook)}
+                          className="px-2.5 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105 transition-all text-[10px] uppercase font-bold tracking-wider rounded-md border border-blue-100 flex items-center gap-1 shadow-sm"
+                        >
                           <FiCpu size={10} /> Analyzed
-                        </span>
+                        </button>
                       )}
                       <span className="px-2.5 py-1 bg-gray-50 text-gray-500 text-[10px] uppercase font-bold tracking-wider rounded-md border border-gray-100">
                         Notebook

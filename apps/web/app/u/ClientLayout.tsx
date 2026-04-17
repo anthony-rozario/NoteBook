@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  FiSearch, FiBook, FiGrid, FiClock, FiPlus, FiLogOut, FiHome, FiX, FiUser, FiSettings
+  FiSearch, FiBook, FiGrid, FiClock, FiPlus, FiLogOut, FiHome, FiX, FiUser, FiSettings, FiFileText
 } from 'react-icons/fi';
 import { RiGeminiFill } from 'react-icons/ri';
 import { useUser } from '@/context/UserContext';
@@ -12,19 +12,31 @@ import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreateNotebookButton from '@/components/CreateNotebookButton';
 
+type SearchResult = {
+  id: string;
+  type: 'notebook' | 'page';
+  title: string;
+  subtitle?: string;
+  href: string;
+};
+
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
   const { user, profile } = useUser();
 
-  const displayFullName = profile?.name || user?.user_metadata?.full_name || 'Anthony Prakash Rozario';
-  const displayEmail = user?.email || '2470064@kiit.ac.in';
+  const displayFullName = profile?.name || user?.user_metadata?.full_name || 'User';
+  const displayEmail = user?.email || '';
 
   // Modal States
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Keyboard shortcut for Search (Cmd+K / Ctrl+K)
   useEffect(() => {
@@ -33,10 +45,70 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         e.preventDefault();
         setIsSearchOpen(true);
       }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setIsProfileOpen(false);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // Perform search in Supabase
+  const performSearch = useCallback(async (query: string) => {
+    if (!query.trim() || !user?.id) {
+      setSearchResults([]);
+      return;
+    }
+    setSearchLoading(true);
+    try {
+      const [notebooksRes, pagesRes] = await Promise.all([
+        supabase
+          .from('notebooks')
+          .select('id, title, type')
+          .eq('user_id', user.id)
+          .ilike('title', `%${query}%`)
+          .limit(5),
+        supabase
+          .from('pages')
+          .select('id, title, notebook_id, notebooks!inner(user_id, title)')
+          .eq('notebooks.user_id', user.id)
+          .ilike('title', `%${query}%`)
+          .limit(5),
+      ]);
+
+      const results: SearchResult[] = [];
+
+      notebooksRes.data?.forEach(nb => {
+        results.push({
+          id: nb.id,
+          type: 'notebook',
+          title: nb.title,
+          subtitle: nb.type === 'pdf' ? 'PDF Notebook' : 'Text Notebook',
+          href: `/u/notebooks/${nb.id}`,
+        });
+      });
+
+      pagesRes.data?.forEach((page: any) => {
+        results.push({
+          id: page.id,
+          type: 'page',
+          title: page.title,
+          subtitle: `In: ${page.notebooks?.title || 'Notebook'}`,
+          href: `/u/notebooks/${page.notebook_id}`,
+        });
+      });
+
+      setSearchResults(results);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, [user?.id, supabase]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => performSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, performSearch]);
 
   const handleLogOut = async () => {
     await supabase.auth.signOut();
@@ -85,8 +157,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         md:static md:w-20 md:h-auto md:bg-transparent md:border-none md:flex-col md:justify-start md:py-4 md:z-10 md:gap-8 shrink-0
       ">
         
-        {/* Create Button (Desktop Only - Mobile uses a FAB below) */}
-        <CreateNotebookButton className="hidden md:flex" />
+        {/* Create Button (Desktop Only) */}
+        <div className="hidden md:flex items-center justify-center w-full">
+          <CreateNotebookButton variant="compact" />
+        </div>
 
         {/* Navigation Icons */}
         <div className="flex flex-row md:flex-col w-full md:w-auto justify-around md:justify-start gap-0 md:gap-6 text-gray-500 md:mt-4">
@@ -144,16 +218,57 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         
         {/* 1. GLOBAL SEARCH MODAL */}
         {isSearchOpen && (
-          <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 md:pt-32 px-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-gray-900/20 backdrop-blur-sm" onClick={() => setIsSearchOpen(false)} />
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: -20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -20 }} className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
-              <div className="flex items-center px-4 md:px-6 py-4 border-b border-gray-100">
-                <FiSearch size={24} className="text-blue-500 mr-3 md:mr-4 shrink-0" />
-                <input autoFocus type="text" placeholder="Search notebooks, pages..." className="flex-1 bg-transparent text-base md:text-lg text-gray-800 placeholder-gray-400 outline-none w-full" onKeyDown={(e) => e.key === 'Escape' && setIsSearchOpen(false)} />
-                <span className="hidden md:inline-block text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-md ml-2 shrink-0">ESC</span>
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 md:pt-24 px-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-gray-900/20 backdrop-blur-sm" onClick={() => { setIsSearchOpen(false); setSearchQuery(''); setSearchResults([]); }} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: -20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -20 }} className="relative w-full max-w-xl bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
+              <div className="flex items-center px-5 py-4 border-b border-gray-100">
+                <FiSearch size={20} className="text-blue-500 mr-3 shrink-0" />
+                <input
+                  ref={searchInputRef}
+                  autoFocus
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search notebooks, pages..."
+                  className="flex-1 bg-transparent text-base text-gray-800 placeholder-gray-400 outline-none"
+                />
+                {searchLoading && <div className="w-4 h-4 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin mr-2 shrink-0" />}
+                <button onClick={() => { setIsSearchOpen(false); setSearchQuery(''); setSearchResults([]); }} className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                  <FiX size={16} />
+                </button>
               </div>
-              <div className="p-6 bg-gray-50/50 min-h-[200px] flex flex-col items-center justify-center text-gray-400 text-sm md:text-base text-center">
-                <p>Start typing to search your workspace.</p>
+              <div className="max-h-[360px] overflow-y-auto custom-scrollbar">
+                {searchQuery.trim() === '' ? (
+                  <div className="p-8 flex flex-col items-center justify-center text-gray-400 text-sm text-center">
+                    <FiSearch size={28} className="mb-3 opacity-40" />
+                    <p>Start typing to search your notebooks and pages</p>
+                    <p className="text-xs mt-1 text-gray-300">Press ESC to close</p>
+                  </div>
+                ) : searchResults.length === 0 && !searchLoading ? (
+                  <div className="p-8 flex flex-col items-center justify-center text-gray-400 text-sm text-center">
+                    <p className="font-medium">No results for "{searchQuery}"</p>
+                    <p className="text-xs mt-1 text-gray-300">Try a different search term</p>
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.id}
+                        onClick={() => { router.push(result.href); setIsSearchOpen(false); setSearchQuery(''); setSearchResults([]); }}
+                        className="w-full flex items-center gap-3 px-5 py-3 hover:bg-blue-50 transition-colors text-left"
+                      >
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${result.type === 'notebook' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+                          {result.type === 'notebook' ? <FiBook size={16} /> : <FiFileText size={16} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 text-sm truncate">{result.title}</p>
+                          {result.subtitle && <p className="text-xs text-gray-400 truncate">{result.subtitle}</p>}
+                        </div>
+                        <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider shrink-0">{result.type}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -227,14 +342,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               </div>
 
               <div className="space-y-2 flex-1 overflow-y-auto custom-scrollbar pb-4">
-                <button className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl transition-colors text-left group">
+                <button 
+                  onClick={() => { router.push('/u/settings/profile'); setIsProfileOpen(false); }}
+                  className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl transition-colors text-left group"
+                >
                   <div className="bg-gray-100 text-gray-600 p-2.5 rounded-xl group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><FiUser size={18}/></div>
                   <div>
                     <p className="font-semibold text-gray-900 text-sm md:text-base">Edit Profile</p>
                     <p className="text-xs text-gray-500">Update your name and photo</p>
                   </div>
                 </button>
-                <button className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl transition-colors text-left group">
+                <button 
+                  onClick={() => { router.push('/u/settings/preferences'); setIsProfileOpen(false); }}
+                  className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 rounded-2xl transition-colors text-left group"
+                >
                   <div className="bg-gray-100 text-gray-600 p-2.5 rounded-xl group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors"><FiSettings size={18}/></div>
                   <div>
                     <p className="font-semibold text-gray-900 text-sm md:text-base">Preferences</p>

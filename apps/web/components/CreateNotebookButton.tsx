@@ -9,8 +9,16 @@ import { createClient } from '@/utils/supabase/client';
 import { useUser } from '@/context/UserContext';
 
 export default function CreateNotebookButton({ 
-  className = "bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm flex items-center gap-2 active:scale-95" 
+  className,
+  variant = 'full'
+}: { 
+  className?: string, 
+  variant?: 'full' | 'compact' 
 }) {
+  const defaultFullClass = "bg-[#1c1c21] hover:bg-black text-white px-5 py-3 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-black/10 flex items-center justify-center gap-2 active:scale-95 w-full";
+  const defaultCompactClass = "w-12 h-12 bg-[#1c1c21] text-white rounded-2xl flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all rotate-3 hover:rotate-0";
+  
+  const activeClass = className || (variant === 'full' ? defaultFullClass : defaultCompactClass);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -43,9 +51,9 @@ export default function CreateNotebookButton({
       .insert({
         user_id: user.id,
         title,
-        category,
+        category: category || null,
         description: creationType === 'digital' ? description : 'Imported PDF Document',
-        type: creationType, 
+        type: creationType,
       })
       .select()
       .single();
@@ -66,16 +74,26 @@ export default function CreateNotebookButton({
         position_index: 1
       });
     } else {
-      const fileExt = pdfFile!.name.split('.').pop();
-      const filePath = `${user.id}/${newNotebook.id}/document.${fileExt}`;
+      // Always use 'document.pdf' — this must match the download path in the editor
+      const filePath = `${user.id}/${newNotebook.id}/document.pdf`;
       
       const { error: uploadError } = await supabase.storage
         .from('notebook_files')
-        .upload(filePath, pdfFile!);
+        .upload(filePath, pdfFile!, { contentType: 'application/pdf', upsert: true });
 
       if (uploadError) {
         console.error("Upload error:", uploadError);
-      } 
+        // Clean up the orphaned notebook since the PDF didn't get uploaded
+        await supabase.from('notebooks').delete().eq('id', newNotebook.id);
+        setLoading(false);
+        
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
+          alert(`Storage bucket not found!\n\nPlease create a public storage bucket named "notebook_files" in your Supabase dashboard:\nStorage → New Bucket → Name: notebook_files → Public: ON`);
+        } else {
+          alert(`PDF upload failed: ${uploadError.message}`);
+        }
+        return;
+      }
     }
 
     setLoading(false);
@@ -160,9 +178,14 @@ export default function CreateNotebookButton({
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className={className}>
-        <FiPlus size={18} /> {className.includes('New Notebook') ? 'New Notebook' : 'Create Notebook'}
+      <button 
+        onClick={() => setIsOpen(true)} 
+        className={activeClass}
+      >
+        <FiPlus className={variant === 'full' ? "w-5 h-5" : "w-6 h-6"} />
+        {variant === 'full' && <span>Create Notebook</span>}
       </button>
+
       {mounted && createPortal(modalContent, document.body)}
     </>
   );
