@@ -78,7 +78,6 @@ export default function NotebookEditor() {
 
     const provider = new SupabaseProvider(roomName, doc, supabase, {
       awareness: true,
-      resyncInterval: 10000,
     });
 
     // Set ydoc immediately so Collaboration extension can attach
@@ -107,7 +106,7 @@ export default function NotebookEditor() {
       }
     };
 
-    provider.on('synced', trySetProvider);
+    provider.on('connect', trySetProvider);
 
     // Fallback: if already synced immediately (cached), check right away
     trySetProvider();

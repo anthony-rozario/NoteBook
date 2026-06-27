@@ -41,16 +41,19 @@ export function decrypt(value: string): string {
 
   // Detect encrypted format: three base64 segments separated by dots
   const parts = value.split('.');
-  if (parts.length !== 3) {
+  const ivPart = parts[0];
+  const ciphertextPart = parts[1];
+  const tagPart = parts[2];
+  if (parts.length !== 3 || !ivPart || !ciphertextPart || !tagPart) {
     // Legacy plain-text value — return as-is (graceful degradation)
     return value;
   }
 
   try {
     const key = getKey();
-    const iv = Buffer.from(parts[0], 'base64');
-    const ciphertext = Buffer.from(parts[1], 'base64');
-    const tag = Buffer.from(parts[2], 'base64');
+    const iv = Buffer.from(ivPart, 'base64');
+    const ciphertext = Buffer.from(ciphertextPart, 'base64');
+    const tag = Buffer.from(tagPart, 'base64');
 
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     decipher.setAuthTag(tag);
