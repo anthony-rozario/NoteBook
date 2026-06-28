@@ -91,7 +91,7 @@ export default function HeroSection({ onOpenModal }: HeroSectionProps) {
           }}>
 
           Your thinking,{' '}
-          <span className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent animate-ai-shimmer">amplified by AI.</span>
+          <span className="ai-shimmer">amplified by AI.</span>
         </h1>
 
         {/* Sub */}
