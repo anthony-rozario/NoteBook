@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+:root {
+  --nb-primary: #1B4FD8;
+  --nb-accent: #6366F1;
+  --nb-border-blue: rgba(27, 79, 216, 0.2);
+}
+
+@theme {
+  --color-nb-primary: #1B4FD8;
+  --color-nb-primary-dark: #113BB0;
+  --color-nb-accent: #6366F1;
+  --color-nb-accent-soft: rgba(99, 102, 241, 0.08);
+  --color-nb-bg: #F8FAFC;
+  --color-nb-border: #E2E8F0;
+  --color-nb-muted: #64748B;
+  --color-nb-foreground: #0F172A;
+
+  --shadow-nb-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-nb-md: 0 4px 12px rgba(27, 79, 216, 0.05), 0 1px 4px rgba(27, 79, 216, 0.05);
+  --shadow-nb-lg: 0 12px 24px rgba(27, 79, 216, 0.08), 0 4px 8px rgba(27, 79, 216, 0.04);
+  --shadow-nb-xl: 0 24px 48px rgba(27, 79, 216, 0.12), 0 8px 16px rgba(27, 79, 216, 0.06);
+}
+
 /* ── Word Editor ─────────────────────────────────────────────────────────── */
 .word-editor-content .ProseMirror {
   background: transparent;
